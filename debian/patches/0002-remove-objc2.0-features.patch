@@ -1,0 +1,306 @@
+From: Jeroen Dekkers <jeroen@dekkers.ch>
+Date: Sat, 24 Mar 2012 22:33:59 +0100
+Subject: remove-objc2.0-features
+
+---
+ Classes/SBJsonBase.h   |    8 ++++-
+ Classes/SBJsonBase.m   |   23 +++++++++++++++-
+ Classes/SBJsonParser.m |   12 ++++++--
+ Classes/SBJsonWriter.h |   10 +++++++
+ Classes/SBJsonWriter.m |   68 +++++++++++++++++++++++++++++++++++++++++++----
+ 5 files changed, 109 insertions(+), 12 deletions(-)
+
+diff --git a/Classes/SBJsonBase.h b/Classes/SBJsonBase.h
+index 7b10844..ee72767 100644
+--- a/Classes/SBJsonBase.h
++++ b/Classes/SBJsonBase.h
+@@ -66,7 +66,7 @@ enum {
+  malicious and the parser returns nil, signalling an error. ("Nested too deep".) You can
+  turn off this security feature by setting the maxDepth value to 0.
+  */
+-@property NSUInteger maxDepth;
++// @property NSUInteger maxDepth;
+ 
+ /**
+  @brief Return an error trace, or nil if there was no errors.
+@@ -75,7 +75,11 @@ enum {
+  You need to check the return value of the call you're making to figure out
+  if the call actually failed, before you know call this method.
+  */
+- @property(copy,readonly) NSArray* errorTrace;
++#if GNUSTEP
++- (NSArray *) errorTrace;
++#else
++@property(copy,readonly) NSArray* errorTrace;
++#endif
+ 
+ /// @internal for use in subclasses to add errors to the stack trace
+ - (void)addErrorWithCode:(NSUInteger)code description:(NSString*)str;
+diff --git a/Classes/SBJsonBase.m b/Classes/SBJsonBase.m
+index 6684325..ef33ec3 100644
+--- a/Classes/SBJsonBase.m
++++ b/Classes/SBJsonBase.m
+@@ -33,13 +33,16 @@ NSString * SBJSONErrorDomain = @"org.brautaset.JSON.ErrorDomain";
+ 
+ @implementation SBJsonBase
+ 
++#if !GNUSTEP
+ @synthesize errorTrace;
+ @synthesize maxDepth;
++#endif
+ 
+ - (id)init {
+     self = [super init];
+     if (self)
+-        self.maxDepth = 512;
++        maxDepth = 512;
++
+     return self;
+ }
+ 
+@@ -48,6 +51,24 @@ NSString * SBJSONErrorDomain = @"org.brautaset.JSON.ErrorDomain";
+     [super dealloc];
+ }
+ 
++#if GNUSTEP
++- (NSArray *) errorTrace
++{
++  return errorTrace;
++}
++
++- (void) setMaxDepth: (NSUInteger) newMaxDepth
++{
++  maxDepth = newMaxDepth;
++}
++
++- (NSUInteger) maxDepth
++{
++  return maxDepth;
++}
++
++#endif
++
+ - (void)addErrorWithCode:(NSUInteger)code description:(NSString*)str {
+     NSDictionary *userInfo;
+     if (!errorTrace) {
+diff --git a/Classes/SBJsonParser.m b/Classes/SBJsonParser.m
+index 222ef70..e87e096 100644
+--- a/Classes/SBJsonParser.m
++++ b/Classes/SBJsonParser.m
+@@ -29,7 +29,7 @@
+ 
+ #import "SBJsonParser.h"
+ 
+-@interface SBJsonParser ()
++@interface SBJsonParser (SBJsonPrivate)
+ 
+ - (BOOL)scanValue:(NSObject **)o;
+ 
+@@ -106,7 +106,7 @@ static char ctrl[0x22];
+         return tmp;
+     
+     if (error)
+-        *error = [self.errorTrace lastObject];
++        *error = [errorTrace lastObject];
+     return nil;
+ }
+ 
+@@ -342,7 +342,11 @@ static char ctrl[0x22];
+                     return NO;
+                     break;
+             }
++#if GNUSTEP
++            [*o appendFormat: @"%C", uc];
++#else
+             CFStringAppendCharacters((CFMutableStringRef)*o, &uc, 1);
++#endif
+             c++;
+             
+         } else if (*c < 0x20) {
+@@ -498,8 +502,10 @@ static char ctrl[0x22];
+                                               encoding:NSUTF8StringEncoding
+                                           freeWhenDone:NO];
+         [str autorelease];
+-        if (str && (*o = [NSDecimalNumber decimalNumberWithString:str]))
++        if (str && (*o = [NSDecimalNumber decimalNumberWithString:str
++                                                           locale:nil])) {
+             return YES;
++        }
+         
+         [self addErrorWithCode:EPARSENUM description: @"Failed creating decimal instance"];
+         return NO;
+diff --git a/Classes/SBJsonWriter.h b/Classes/SBJsonWriter.h
+index ae1a597..7099c85 100644
+--- a/Classes/SBJsonWriter.h
++++ b/Classes/SBJsonWriter.h
+@@ -66,7 +66,12 @@
+  JSON with linebreaks after each array value and dictionary key/value pair, indented two
+  spaces per nesting level.
+  */
++#if GNUSTEP
++- (void) setHumanReadable: (BOOL) newValue;
++- (BOOL) humanReadable;
++#else
+ @property BOOL humanReadable;
++#endif
+ 
+ /**
+  @brief Whether or not to sort the dictionary keys in the output.
+@@ -74,7 +79,12 @@
+  If this is set to YES, the dictionary keys in the JSON output will be in sorted order.
+  (This is useful if you need to compare two structures, for example.) The default is NO.
+  */
++#if GNUSTEP
++- (void) setSortKeys: (BOOL) newValue;
++- (BOOL) sortKeys;
++#else
+ @property BOOL sortKeys;
++#endif
+ 
+ /**
+  @brief Return JSON representation (or fragment) for the given object.
+diff --git a/Classes/SBJsonWriter.m b/Classes/SBJsonWriter.m
+index 83e8a20..0bf6568 100644
+--- a/Classes/SBJsonWriter.m
++++ b/Classes/SBJsonWriter.m
+@@ -27,9 +27,11 @@
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#include <math.h>
++
+ #import "SBJsonWriter.h"
+ 
+-@interface SBJsonWriter ()
++@interface SBJsonWriter (SBJsonPrivate)
+ 
+ - (BOOL)appendValue:(id)fragment into:(NSMutableString*)json;
+ - (BOOL)appendArray:(NSArray*)fragment into:(NSMutableString*)json;
+@@ -42,8 +44,10 @@
+ 
+ @implementation SBJsonWriter
+ 
++#if !GNUSTEP
+ @synthesize sortKeys;
+ @synthesize humanReadable;
++#endif
+ 
+ static NSMutableCharacterSet *kEscapeChars;
+ 
+@@ -52,6 +56,30 @@ static NSMutableCharacterSet *kEscapeChars;
+ 	[kEscapeChars addCharactersInString: @"\"\\"];
+ }
+ 
++#if GNUSTEP
++- (void) setHumanReadable: (BOOL) newValue
++{
++  humanReadable = newValue;
++}
++
++- (BOOL) humanReadable
++{
++  return humanReadable;
++}
++#endif
++
++#if GNUSTEP
++- (void) setSortKeys: (BOOL) newValue
++{
++  sortKeys = newValue;
++}
++
++- (BOOL) sortKeys
++{
++  return sortKeys;
++}
++#endif
++
+ - (NSString*)stringWithObject:(id)value {
+     [self clearErrorTrace];
+     
+@@ -78,7 +106,7 @@ static NSMutableCharacterSet *kEscapeChars;
+         return tmp;
+     
+     if (error)
+-        *error = [self.errorTrace lastObject];
++        *error = [errorTrace lastObject];
+     return nil;
+ }
+ 
+@@ -102,10 +130,11 @@ static NSMutableCharacterSet *kEscapeChars;
+     } else if ([fragment isKindOfClass:[NSNumber class]]) {
+         if ('c' == *[fragment objCType]) {
+             [json appendString:[fragment boolValue] ? @"true" : @"false"];
++#if !GNUSTEP
+         } else if ([fragment isEqualToNumber:(NSNumber*)kCFNumberNaN]) {
+             [self addErrorWithCode:EUNSUPPORTED description:@"NaN is not a valid number in JSON"];
+             return NO;
+-
++#endif
+         } else if (isinf([fragment doubleValue])) {
+             [self addErrorWithCode:EUNSUPPORTED description:@"Infinity is not a valid number in JSON"];
+             return NO;
+@@ -126,14 +155,26 @@ static NSMutableCharacterSet *kEscapeChars;
+ }
+ 
+ - (BOOL)appendArray:(NSArray*)fragment into:(NSMutableString*)json {
++#if GNUSTEP
++    NSEnumerator *fragmentEnum;
++    id value;
++
++    fragmentEnum = [fragment objectEnumerator];
++#endif
++
+     if (maxDepth && ++depth > maxDepth) {
+         [self addErrorWithCode:EDEPTH description: @"Nested too deep"];
+         return NO;
+     }
+     [json appendString:@"["];
+     
+-    BOOL addComma = NO;    
+-    for (id value in fragment) {
++    BOOL addComma = NO;
++#if GNUSTEP
++    while ((value = [fragmentEnum nextObject]))
++#else
++    for (id value in fragment)
++#endif
++      {
+         if (addComma)
+             [json appendString:@","];
+         else
+@@ -164,10 +205,21 @@ static NSMutableCharacterSet *kEscapeChars;
+     NSString *colon = [self humanReadable] ? @" : " : @":";
+     BOOL addComma = NO;
+     NSArray *keys = [fragment allKeys];
+-    if (self.sortKeys)
++#if GNUSTEP
++    NSEnumerator *keysEnum;
++    id value;
++
++    keysEnum = [keys objectEnumerator];
++#endif
++
++    if (sortKeys)
+         keys = [keys sortedArrayUsingSelector:@selector(compare:)];
+     
++#if GNUSTEP
++    while ((value = [keysEnum nextObject])) {
++#else
+     for (id value in keys) {
++#endif
+         if (addComma)
+             [json appendString:@","];
+         else
+@@ -223,7 +275,11 @@ static NSMutableCharacterSet *kEscapeChars;
+                     if (uc < 0x20) {
+                         [json appendFormat:@"\\u%04x", uc];
+                     } else {
++#if GNUSTEP
++                        [json appendFormat: @"%C", uc];
++#else
+                         CFStringAppendCharacters((CFMutableStringRef)json, &uc, 1);
++#endif
+                     }
+                     break;
+                     

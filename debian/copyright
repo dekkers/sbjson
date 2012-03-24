@@ -1,0 +1,8 @@
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=173
+Upstream-Name: JSON Framework
+Upstream-Contact: Stig Brautaset <stig@brautaset.org>
+Source: http://stig.github.com/json-framework/
+
+Files: *
+Copyright: 2007-2010 Stig Brautaset
+License: BSD-3-clause

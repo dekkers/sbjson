@@ -1,0 +1,28 @@
+Source: libsbjson
+Section: libs
+Priority: optional
+Maintainer: Jeroen Dekkers <jeroen@dekkers.ch>
+Build-Depends: debhelper (>= 8), cdbs, gobjc, gnustep-make, libgnustep-base-dev
+Standards-Version: 3.9.2
+Homepage: http://stig.github.com/json-framework
+
+Package: libsbjson2.3
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${gnustep:Depends}
+Provides: libsbjson
+Description: High performance Objective-C JSON library 
+ The SBJson library is a very fast JSON library for the Objective-C
+ language.
+ .
+ This package contains the shared library.
+
+Package: libsbjson-dev
+Section: libdevel
+Priority: extra
+Architecture: any
+Depends: libsbjson2.3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, ${gnustep:Depends}
+Description: High performance Objective-C JSON library (development files)
+ The SBJson library is a very fast JSON library for the Objective-C
+ language.
+ .
+ This package contains the development files.

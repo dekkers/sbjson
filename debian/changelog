@@ -1,0 +1,5 @@
+libsbjson (2.3.2-1~unreleased) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- Jeroen Dekkers <jeroen@dekkers.ch>  Sat, 24 Mar 2012 22:40:32 +0100

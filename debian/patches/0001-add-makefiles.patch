@@ -1,0 +1,59 @@
+From: Jeroen Dekkers <jeroen@dekkers.ch>
+Date: Sat, 24 Mar 2012 22:33:59 +0100
+Subject: add-makefiles
+
+---
+ Classes/GNUmakefile |   27 +++++++++++++++++++++++++++
+ GNUmakefile         |    9 +++++++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+ create mode 100644 Classes/GNUmakefile
+ create mode 100644 GNUmakefile
+
+diff --git a/Classes/GNUmakefile b/Classes/GNUmakefile
+new file mode 100644
+index 0000000..2249e72
+--- /dev/null
++++ b/Classes/GNUmakefile
+@@ -0,0 +1,27 @@
++# GNUstep makefile
++include $(GNUSTEP_MAKEFILES)/common.make
++
++LIBRARY_NAME = SBJson
++
++SBJson_VERSION=2.3.2
++
++SBJson_INCLUDE_DIRS = -std=gnu99
++
++SBJson_HEADER_FILES = \
++        SBJson.h \
++        NSObject+SBJSON.h \
++        NSString+SBJSON.h \
++        SBJsonBase.h \
++        SBJsonParser.h \
++        SBJsonWriter.h
++
++SBJson_OBJC_FILES = \
++        NSObject+SBJSON.m \
++        NSString+SBJSON.m \
++        SBJsonBase.m \
++        SBJsonParser.m \
++        SBJsonWriter.m
++
++-include GNUmakefile.preamble
++include $(GNUSTEP_MAKEFILES)/library.make
++-include GNUmakefile.postamble
+diff --git a/GNUmakefile b/GNUmakefile
+new file mode 100644
+index 0000000..22b9785
+--- /dev/null
++++ b/GNUmakefile
+@@ -0,0 +1,9 @@
++# GNUstep makefile
++
++include $(GNUSTEP_MAKEFILES)/common.make
++
++SUBPROJECTS += Classes
++
++-include GNUmakefile.preamble
++include $(GNUSTEP_MAKEFILES)/aggregate.make
++-include GNUmakefile.postamble
