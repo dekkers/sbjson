@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Jeroen Dekkers <jeroen@dekkers.ch>
 Build-Depends: debhelper (>= 8), cdbs, gobjc, gnustep-make, libgnustep-base-dev
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: http://stig.github.com/json-framework
 
 Package: libsbjson2.3
