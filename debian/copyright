@@ -6,6 +6,12 @@ Source: http://stig.github.com/json-framework/
 Files: *
 Copyright: 2007-2010 Stig Brautaset
 License: BSD-3-clause
+
+Files: debian/*
+Copyright: 2012 Jeroen Dekkers <jeroen@dekkers.ch>
+License: BSD-3-clause
+
+License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  .
