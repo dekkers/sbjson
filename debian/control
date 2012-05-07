@@ -12,9 +12,10 @@ Package: libsbjson2.3
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${gnustep:Depends}
 Provides: libsbjson
-Description: High performance Objective-C JSON library 
- The SBJson library is a very fast JSON library for the Objective-C
- language.
+Description: Objective-C JSON library
+ A strict JSON parser and generator for Objective-C. It adds categories
+ to existing Objective-C objects for a super-simple interface. More
+ flexible APIs are also provided for added control.
  .
  This package contains the shared library.
 
@@ -23,8 +24,9 @@ Section: libdevel
 Priority: extra
 Architecture: any
 Depends: libsbjson2.3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, ${gnustep:Depends}
-Description: High performance Objective-C JSON library (development files)
- The SBJson library is a very fast JSON library for the Objective-C
- language.
+Description: Objective-C JSON library (development files)
+ A strict JSON parser and generator for Objective-C. It adds categories
+ to existing Objective-C objects for a super-simple interface. More
+ flexible APIs are also provided for added control.
  .
  This package contains the development files.
