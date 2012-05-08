@@ -1,12 +1,12 @@
-Source: libsbjson
+Source: sbjson
 Section: libs
 Priority: optional
 Maintainer: Jeroen Dekkers <jeroen@dekkers.ch>
 Build-Depends: debhelper (>= 8), cdbs, gobjc, gnustep-make, libgnustep-base-dev
 Standards-Version: 3.9.3
 Homepage: http://stig.github.com/json-framework
-Vcs-Browser: https://github.com/dekkers/json-framework
-Vcs-Git: git://github.com/dekkers/json-framework.git
+Vcs-Browser: https://github.com/dekkers/sbjson
+Vcs-Git: git://github.com/dekkers/sbjson.git
 
 Package: libsbjson2.3
 Architecture: any
