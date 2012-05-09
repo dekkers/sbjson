@@ -1,5 +1,5 @@
-sbjson (2.3.2-1~unreleased) unstable; urgency=low
+sbjson (2.3.2-1) unstable; urgency=low
 
-  * Initial packaging.
+  * Initial release. (Closes: #672134)
 
- -- Jeroen Dekkers <jeroen@dekkers.ch>  Sat, 24 Mar 2012 22:40:32 +0100
+ -- Jeroen Dekkers <jeroen@dekkers.ch>  Wed, 09 May 2012 15:18:17 +0200
