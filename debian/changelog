@@ -1,3 +1,10 @@
+sbjson (2.3.2-2) unstable; urgency=low
+
+  * Build with hardening enabled.
+  * Correctly link with libobjc and libgnustep-base.
+
+ -- Jeroen Dekkers <jeroen@dekkers.ch>  Fri, 29 Jun 2012 19:09:28 +0200
+
 sbjson (2.3.2-1) unstable; urgency=low
 
   * Initial release. (Closes: #672134)
