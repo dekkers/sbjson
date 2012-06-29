@@ -3,18 +3,18 @@ Date: Sat, 24 Mar 2012 22:33:59 +0100
 Subject: add-makefiles
 
 ---
- Classes/GNUmakefile |   27 +++++++++++++++++++++++++++
+ Classes/GNUmakefile |   29 +++++++++++++++++++++++++++++
  GNUmakefile         |    9 +++++++++
- 2 files changed, 36 insertions(+), 0 deletions(-)
+ 2 files changed, 38 insertions(+)
  create mode 100644 Classes/GNUmakefile
  create mode 100644 GNUmakefile
 
 diff --git a/Classes/GNUmakefile b/Classes/GNUmakefile
 new file mode 100644
-index 0000000..2249e72
+index 0000000..625d963
 --- /dev/null
 +++ b/Classes/GNUmakefile
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,29 @@
 +# GNUstep makefile
 +include $(GNUSTEP_MAKEFILES)/common.make
 +
@@ -38,6 +38,8 @@ index 0000000..2249e72
 +        SBJsonBase.m \
 +        SBJsonParser.m \
 +        SBJsonWriter.m
++
++SBJson_LIBRARIES_DEPEND_UPON += -lgnustep-base -lobjc
 +
 +-include GNUmakefile.preamble
 +include $(GNUSTEP_MAKEFILES)/library.make
