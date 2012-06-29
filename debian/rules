@@ -3,6 +3,11 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+export DEB_BUILD_MAINT_OPTIONS=hardening=+bindnow
+include /usr/share/dpkg/buildflags.mk
+# FIXME: dpkg-buildflags / cdbs should support OBJCFLAGS
+DEB_MAKE_BUILD_TARGET = all messages=yes OBJCFLAGS="$(CFLAGS)"
+
 include /usr/share/cdbs/1/rules/gnustep.mk
 include /usr/share/cdbs/1/class/gnumakefile.mk
 
