@@ -5,8 +5,8 @@ Maintainer: Jeroen Dekkers <jeroen@dekkers.ch>
 Build-Depends: debhelper (>= 9), dpkg-dev (>= 1.16.1~), cdbs, gobjc, gnustep-make, libgnustep-base-dev
 Standards-Version: 3.9.3
 Homepage: http://stig.github.com/json-framework
-Vcs-Browser: https://github.com/dekkers/sbjson
-Vcs-Git: git://github.com/dekkers/sbjson.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/sbjson.git
+Vcs-Git: git://git.debian.org/git/collab-maint/sbjson.git
 
 Package: libsbjson2.3
 Architecture: any
